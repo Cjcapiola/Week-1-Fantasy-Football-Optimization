@@ -16,6 +16,61 @@ The first step in the optimization process was determing what sort of data would
 
 3.) Manual Data Collection: For specific players who were not present in our chosen dataset or for whom I needed more detailed information, manual data collection was carried out. This was particularly useful for rookies or less-known players. This method included doing general research into college performances as well as any relevant news articles resulting in manual extraction of key data points.
 
+Here is an excerpt from the full set of offense data that was pooled from the sources outlined above.
+| Player         | Pos   | Team   |   Passing Yds |   Passing TD |   Interceptions |   Rushing Yds |   Rushing TD |   Receving Yds |   Receptions |   Receving TDs |   Total Fumbles |   2PT Conversion Made |
+|:---------------|:------|:-------|--------------:|-------------:|----------------:|--------------:|-------------:|---------------:|-------------:|---------------:|----------------:|----------------------:|
+| J. Allen       | QB    | Buf    |          4407 |           36 |              15 |           763 |            6 |              0 |            0 |              0 |               8 |                     3 |
+| J. Herbert     | QB    | LAC    |          5014 |           38 |              15 |           302 |            3 |              0 |            0 |              0 |               1 |                     6 |
+| P. Mahomes     | QB    | KC     |          4839 |           37 |              13 |           381 |            2 |              0 |            0 |              0 |               9 |                     2 |
+| T. Brady       | QB    | TB     |          5316 |           43 |              12 |            81 |            2 |              0 |            0 |              0 |               4 |                     0 |
+| J. Burrow      | QB    | Cin    |          4611 |           34 |              14 |           118 |            2 |              0 |            0 |              0 |               5 |                     1 |
+| M. Stafford    | QB    | LAR    |          4886 |           41 |              17 |            43 |            0 |              0 |            0 |              0 |               5 |                     2 |
+| D. Prescott    | QB    | Dal    |          4449 |           37 |              10 |           146 |            1 |              0 |            0 |              0 |              14 |                     3 |
+| A. Rodgers     | QB    | GB     |          4115 |           37 |               4 |           101 |            3 |             -4 |            1 |              0 |               3 |                     0 |
+| R. Tannehill   | QB    | Ten    |          3734 |           21 |              14 |           270 |            7 |              0 |            0 |              0 |              10 |                     1 |
+| D. Carr        | QB    | LV     |          4804 |           23 |              14 |           108 |            0 |              0 |            0 |              0 |              13 |                     0 |
+| J. Hurts       | QB    | Phi    |          3144 |           16 |               9 |           784 |           10 |              0 |            0 |              0 |               9 |                     3 |
+| K. Murray      | QB    | Ari    |          3787 |           24 |              10 |           423 |            5 |              7 |            0 |              0 |              13 |                     0 |
+| K. Cousins     | QB    | Min    |          4221 |           33 |               7 |           115 |            1 |              0 |            0 |              0 |              12 |                     0 |
+| M. Ryan        | QB    | Ind    |          3968 |           20 |              12 |            82 |            1 |              0 |            0 |              0 |              11 |                     1 |
+| L. Jackson     | QB    | Bal    |          2882 |           16 |              13 |           767 |            2 |              0 |            0 |              0 |               6 |                     2 |
+| C. Wentz       | QB    | Was    |          3563 |           27 |               7 |           215 |            1 |              0 |            0 |              0 |               8 |                     2 |
+| T. Heinicke    | QB    | Was    |          3419 |           20 |              15 |           313 |            1 |             -2 |            1 |              0 |               7 |                     1 |
+| T. Lawrence    | QB    | Jax    |          3641 |           12 |              17 |           334 |            2 |              0 |            0 |              0 |               9 |                     2 |
+| M. Jones       | QB    | NE     |          3801 |           22 |              13 |           129 |            0 |              0 |            0 |              0 |               7 |                     2 |
+| J. Garoppolo   | QB    | SF     |          3810 |           20 |              12 |            51 |            3 |              0 |            0 |              0 |               8 |                     1 |
+| R. Wilson      | QB    | Den    |          3113 |           25 |               6 |           183 |            2 |              0 |            0 |              0 |               6 |                     1 |
+| B. Mayfield    | QB    | Car    |          3010 |           17 |              13 |           134 |            1 |             11 |            0 |              0 |               6 |                     2 |
+| J. Goff        | QB    | Det    |          3245 |           19 |               8 |            87 |            0 |              0 |            0 |              0 |               9 |                     4 |
+| T. Bridgewater | QB    | Mia    |          3052 |           18 |               7 |           106 |            2 |              0 |            0 |              0 |               1 |                     1 |
+| J. Taylor      | RB    | Ind    |             0 |            0 |               0 |          1811 |           18 |            360 |           40 |              2 |               4 |                     0 |
+| Z. Wilson      | QB    | NYJ    |          2334 |            9 |              11 |           185 |            4 |              0 |            0 |              0 |               5 |                     2 |
+| S. Darnold     | QB    | Car    |          2527 |            9 |              13 |           222 |            5 |              0 |            0 |              0 |               9 |                     1 |
+| T. Tagovailoa  | QB    | Mia    |          2653 |           16 |              10 |           128 |            3 |              0 |            0 |              0 |               9 |                     1 |
+| D. Mills       | QB    | Hou    |          2664 |           16 |              10 |            44 |            0 |              0 |            0 |              0 |               5 |                     2 |
+| D. Jones       | QB    | NYG    |          2428 |           10 |               7 |           298 |            2 |             16 |            1 |              0 |               7 |                     3 |
+| C. Kupp        | WR    | LAR    |             0 |            0 |               0 |            18 |            0 |           1947 |          145 |             16 |               0 |                     1 |
+| A. Ekeler      | RB    | LAC    |             0 |            0 |               0 |           911 |           12 |            647 |           70 |              8 |               4 |                     2 |
+| J. Fields      | QB    | Chi    |          1870 |            7 |              10 |           420 |            2 |              0 |            0 |              0 |              12 |                     0 |
+| J. Mixon       | RB    | Cin    |             0 |            0 |               0 |          1205 |           13 |            314 |           42 |              3 |               2 |                     0 |
+| N. Harris      | RB    | Pit    |             0 |            0 |               0 |          1200 |            7 |            467 |           74 |              3 |               0 |                     0 |
+| D. Samuel      | WR    | SF     |            24 |            1 |               0 |           365 |            8 |           1405 |           77 |              6 |               4 |                     0 |
+| J. Conner      | RB    | Ari    |             0 |            0 |               0 |           752 |           15 |            375 |           37 |              3 |               2 |                     0 |
+| D. Adams       | WR    | LV     |             0 |            0 |               0 |             0 |            0 |           1553 |          123 |             11 |               0 |                     0 |
+| J. Jefferson   | WR    | Min    |            35 |            0 |               0 |            14 |            0 |           1616 |          108 |             10 |               1 |                     0 |
+| E. Elliott     | RB    | Dal    |             4 |            0 |               0 |          1002 |           10 |            287 |           47 |              2 |               1 |                     3 |
+| N. Chubb       | RB    | Cle    |             0 |            0 |               0 |          1259 |            8 |            174 |           20 |              1 |               2 |                     0 |
+| A. Gibson      | RB    | Was    |             0 |            0 |               0 |          1037 |            7 |            294 |           42 |              3 |               6 |                     1 |
+| J. Chase       | WR    | Cin    |             0 |            0 |               0 |            21 |            0 |           1455 |           81 |             13 |               2 |                     0 |
+| L. Fournette   | RB    | TB     |             0 |            0 |               0 |           812 |            8 |            454 |           69 |              2 |               1 |                     0 |
+| A. Kamara      | RB    | NO     |             0 |            0 |               0 |           898 |            4 |            439 |           47 |              5 |               0 |                     0 |
+| M. Andrews     | TE    | Bal    |             0 |            0 |               0 |             0 |            0 |           1361 |          107 |              9 |               1 |                     2 |
+| C. Patterson   | RB    | Atl    |             0 |            0 |               0 |           618 |            6 |            548 |           52 |              5 |               1 |                     0 |
+| D. Harris      | RB    | NE     |             0 |            0 |               0 |           929 |           15 |            132 |           18 |              0 |               2 |                     0 |
+| T. Hill        | WR    | Mia    |             0 |            0 |               0 |            96 |            0 |           1239 |          111 |              9 |               2 |                     0 |
+| D. Cook        | RB    | Min    |             0 |            0 |               0 |          1159 |            6 |            224 |           34 |              0 |               3 |                     1 |
+
+The full file is accessible here: 
 ### Relevant Metrics
 
 By focusing on just the relevant metrics to the way my PPR League was scored, I was able to further remove an extraneous data and focus on what really mattered.
