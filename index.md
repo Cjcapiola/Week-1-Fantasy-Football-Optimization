@@ -18,6 +18,7 @@ The first step in the optimization process was determing what sort of data would
 
 Here is an excerpt from the full set of offense data that was pooled from the sources outlined above.
 
+
 | Player         | Pos   | Team   |   Passing Yds |   Passing TD |   Interceptions |   Rushing Yds |   Rushing TD |   Receving Yds |   Receptions |   Receving TDs |   Total Fumbles |   2PT Conversion Made |
 |:---------------|:------|:-------|--------------:|-------------:|----------------:|--------------:|-------------:|---------------:|-------------:|---------------:|----------------:|----------------------:|
 | J. Allen       | QB    | Buf    |          4407 |           36 |              15 |           763 |            6 |              0 |            0 |              0 |               8 |                     3 |
@@ -71,6 +72,7 @@ Here is an excerpt from the full set of offense data that was pooled from the so
 | T. Hill        | WR    | Mia    |             0 |            0 |               0 |            96 |            0 |           1239 |          111 |              9 |               2 |                     0 |
 | D. Cook        | RB    | Min    |             0 |            0 |               0 |          1159 |            6 |            224 |           34 |              0 |               3 |                     1 |
 
+
 [The full file is accessible here:](https://github.com/Cjcapiola/Week-1-Fantasy-Football-Optimization/raw/main/New%20Fantasy%202022%20Season%20Totals.xlsx)
 ### Relevant Metrics
 
@@ -89,10 +91,10 @@ Before diving into the analysis, the dataset was thoroughly cleaned and pruned t
 
 ```python
 # Load the dataset
-df = pd.read_excel('path/to/dataset.xlsx')
+df = pd.read_excel('Cjcapiola/Week-1-Fantasy-Football-Optimization/raw/main/New%20Fantasy%202022%20Season%20Totals.xlsx')
 
 # Drop irrelevant columns
-df.drop(['Irrelevant_Column1', 'Irrelevant_Column2'], axis=1, inplace=True)
+df.drop(['Passing Incompletions', 'Pick Six', 'Rush Attempts', 1st Downs Made', 'Receving Targets', 'Kickoff Return TD' 'Kickoff Return Total Yards'], axis=1, inplace=True)
 ```
 This code snippet loads the dataset into a Pandas DataFrame and removes irrelevant columns. The drop() method is used to get rid of columns that I do not need for this specific analysis.
 
