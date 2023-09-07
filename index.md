@@ -17,6 +17,7 @@ The first step in the optimization process was determing what sort of data would
 3.) Manual Data Collection: For specific players who were not present in our chosen dataset or for whom I needed more detailed information, manual data collection was carried out. This was particularly useful for rookies or less-known players. This method included doing general research into college performances as well as any relevant news articles resulting in manual extraction of key data points.
 
 Here is an excerpt from the full set of offense data that was pooled from the sources outlined above.
+
 | Player         | Pos   | Team   |   Passing Yds |   Passing TD |   Interceptions |   Rushing Yds |   Rushing TD |   Receving Yds |   Receptions |   Receving TDs |   Total Fumbles |   2PT Conversion Made |
 |:---------------|:------|:-------|--------------:|-------------:|----------------:|--------------:|-------------:|---------------:|-------------:|---------------:|----------------:|----------------------:|
 | J. Allen       | QB    | Buf    |          4407 |           36 |              15 |           763 |            6 |              0 |            0 |              0 |               8 |                     3 |
