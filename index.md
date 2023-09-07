@@ -70,7 +70,7 @@ Here is an excerpt from the full set of offense data that was pooled from the so
 | T. Hill        | WR    | Mia    |             0 |            0 |               0 |            96 |            0 |           1239 |          111 |              9 |               2 |                     0 |
 | D. Cook        | RB    | Min    |             0 |            0 |               0 |          1159 |            6 |            224 |           34 |              0 |               3 |                     1 |
 
-[The full file is accessible here:] (https://github.com/Cjcapiola/Week-1-Fantasy-Football_Optimization/raw/main/New Fantasy 2022 Season Totals.xlsx)
+[The full file is accessible here:](https://github.com/Cjcapiola/Week-1-Fantasy-Football-Optimization/raw/main/New-Fantasy-2022-Season-Totals.xlsx)
 ### Relevant Metrics
 
 By focusing on just the relevant metrics to the way my PPR League was scored, I was able to further remove an extraneous data and focus on what really mattered.
