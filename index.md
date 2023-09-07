@@ -89,21 +89,193 @@ I assigned each metric a point value based on typical fantasy football scoring r
 ### Data Cleaning
 Before diving into the analysis, the dataset was thoroughly cleaned and pruned to only include relevant metrics.
 
+As part of the data cleaning process it was neccessary to extract specifically the data that is relevant to the players on my own team. I was able to feed my current roster of players into a python data set and created code that extracted the relevant statistics from the larger sheet. There were also subsequent data cleaning processes that occured in order to streamline computation. The dataset gathered, was improperly formatted so that the section headers where not placed into the first row, so first the data had to be reformatted. Additionally, in the case of D. Johnson, there were multiple players in the data set under D. Johnson. The D. Johnson relevant to my roster was a wide recevier so the data set was altered to filter D. Johnson by position WR.
+
 ```python
-# Load the dataset
-df = pd.read_excel('Cjcapiola/Week-1-Fantasy-Football-Optimization/raw/main/New%20Fantasy%202022%20Season%20Totals.xlsx')
+import pandas as pd
 
-#Based on player position
-if (position == "QB")
- drop == [3:7];
-end
+# Import data from the excell file and analyze.
+# Read the data from the relevant sheet to inspect its structure
+df_sheet1 = pd.read_excel(Cjcapiola/Week-1-Fantasy-Football-Optimization/raw/main/New%20Fantasy%202022%20Season%20Totals.xlsx, sheet_name='Sheet1')
 
-# Drop irrelevant columns
-df.drop(['Passing Incompletions', 'Pick Six', 'Rush Attempts', '1st Downs Made', 'Receving Targets', 'Kickoff Return TD' 'Kickoff Return Total Yards'], axis=1, inplace=True)
+# Set the first row as column names and drop the first row
+df_sheet1.columns = df_sheet1.iloc[0]
+df_sheet1 = df_sheet1.drop(index=0).reset_index(drop=True)
+
+# List of players to extract data for
+players_to_extract = [
+    "D. Prescott", "T. Pollard", "D. Cook", "D. Adams", "D. Johnson", 
+    "K. Pitts", "T. Etienne Jr", "Browns Defense", "G. Gano", "R. Stevenson", 
+    "B. Cooks", "J. Meyers", "K. Cousins", "D. Mooney", "M. Gallup", "P. Campbell"
+]
+
+# Extract data for the specified players
+extracted_data = df_sheet1[df_sheet1['Player'].isin(players_to_extract)].reset_index(drop=True)
+
+# Filter the extracted data for "D. Johnson" based on the position "WR"
+filtered_extracted_data = extracted_data[~((extracted_data['Player'] == 'D. Johnson') & (extracted_data['Pos'] != 'WR'))].reset_index(drop=True)
 ```
-This code snippet loads the dataset into a Pandas DataFrame and removes irrelevant columns. The drop() method is used to get rid of columns that I do not need for this specific analysis. For example, the fantasy football points for a quarterback do not depend on the number of first down conversions they made nor how many receving targets they had for the 2022 season. By dropping unessessary data, I was able to streamline the analysis process by avoiding uneccessary computational work.
 
-### Calculating Per-Game Stats
+The refined and extracted data is avaliable for view in the following table.
+
+| Player      | Pos | Team | Passing Yds | Passing TD | Interceptions | Rushing Yds | Rushing TD | Receving Yds | Receptions | Receving TDs | Total Fumbles | 2PT Conversion Made |
+|-------------|-----|------|-------------|------------|---------------|-------------|------------|--------------|------------|--------------|---------------|---------------------|
+| D. Prescott | QB  | Dal  | 4449        | 37         | 10            | 146         | 1          | 0            | 0          | 0            | 14            | 3                   |
+| K. Cousins  | QB  | Min  | 4221        | 33         | 7             | 115         | 1          | 0            | 0          | 0            | 12            | 0                   |
+| D. Adams    | WR  | LV   | 0           | 0          | 0             | 0           | 0          | 1553         | 123        | 11           | 0             | 0                   |
+| D. Cook     | RB  | Min  | 0           | 0          | 0             | 1159        | 6          | 224          | 34         | 0            | 3             | 1                   |
+| D. Johnson  | WR  | Pit  | 0           | 0          | 0             | 53          | 0          | 1161         | 107        | 8            | 2             | 1                   |
+| T. Pollard  | RB  | Dal  | 0           | 0          | 0             | 719         | 2          | 337          | 39         | 0            | 2             | 0                   |
+| D. Mooney   | WR  | Chi  | 0           | 0          | 0             | 32          | 1          | 1055         | 81         | 4            | 0             | 0                   |
+| B. Cooks    | WR  | Hou  | 0           | 0          | 0             | 21          | 0          | 1037         | 90         | 6            | 0             | 0                   |
+| K. Pitts    | TE  | Atl  | 0           | 0          | 0             | 0           | 0          | 1026         | 68         | 1            | 0             | 0                   |
+| R. Stevenson| RB  | NE   | 0           | 0          | 0             | 606         | 5          | 123          | 14         | 0            | 2             | 0                   |
+| J. Meyers   | WR  | NE   | 45          | 0          | 0             | 9           | 0          | 866          | 83         | 2            | 1             | 2                   |
+| M. Gallup   | WR  | Dal  | 0           | 0          | 0             | 0           | 0          | 445          | 35         | 2            | 0             | 0                   |
+| P. Campbell | WR  | Ind  | 0           | 0          | 0             | 0           | 0          | 162          | 10         | 1            | 0             | 0                   |
+
+Now that we have extracted the relevant data from the master dataset, it must undergo further cleaning to ease later computational analysis. For example, Receving Yards is not a relevant metric for quarterbacks so it must be removed so players will be compared only if they occupy the same position.
+
+```python
+# Group the data by position and convert each group to a table
+grouped_by_position = filtered_extracted_data.groupby('Pos')
+tables_by_position = {}
+
+for position, group in grouped_by_position:
+    table = group.to_markdown(index=False)
+    tables_by_position[position] = table
+
+diplay tables_by_position
+```
+
+Here the code seperates the roster based on position and creates tables as shown below.
+
+### Quarterbacks
+
+| Player      | Pos | Team | Passing Yds | Passing TD | Interceptions | Rushing Yds | Rushing TD | Receving Yds | Receptions | Receving TDs | Total Fumbles | 2PT Conversion Made |
+|-------------|-----|------|-------------|------------|---------------|-------------|------------|--------------|------------|--------------|---------------|---------------------|
+| D. Prescott | QB  | Dal  | 4449        | 37         | 10            | 146         | 1          | 0            | 0          | 0            | 14            | 3                   |
+| K. Cousins  | QB  | Min  | 4221        | 33         | 7             | 115         | 1          | 0            | 0          | 0            | 12            | 0                   |
+
+
+### Running Backs
+
+| Player      | Pos | Team | Passing Yds | Passing TD | Interceptions | Rushing Yds | Rushing TD | Receving Yds | Receptions | Receving TDs | Total Fumbles | 2PT Conversion Made |
+|-------------|-----|------|-------------|------------|---------------|-------------|------------|--------------|------------|--------------|---------------|---------------------|
+| D. Cook     | RB  | Min  | 0           | 0          | 0             | 1159        | 6          | 224          | 34         | 0            | 3             | 1                   |
+| T. Pollard  | RB  | Dal  | 0           | 0          | 0             | 719         | 2          | 337          | 39         | 0            | 2             | 0                   |
+| R. Stevenson| RB  | NE   | 0           | 0          | 0             | 606         | 5          | 123          | 14         | 0            | 2             | 0                   |
+
+
+### Tight-Ends
+
+| Player   | Pos | Team | Passing Yds | Passing TD | Interceptions | Rushing Yds | Rushing TD | Receving Yds | Receptions | Receving TDs | Total Fumbles | 2PT Conversion Made |
+|----------|-----|------|-------------|------------|---------------|-------------|------------|--------------|------------|--------------|---------------|---------------------|
+| K. Pitts  | TE  | Atl  | 0           | 0          | 0             | 0           | 0          | 1026         | 68         | 1            | 0             | 0                   |
+
+
+### Wide Receviers
+
+| Player     | Pos | Team | Passing Yds | Passing TD | Interceptions | Rushing Yds | Rushing TD | Receving Yds | Receptions | Receving TDs | Total Fumbles | 2PT Conversion Made |
+|------------|-----|------|-------------|------------|---------------|-------------|------------|--------------|------------|--------------|---------------|---------------------|
+| D. Adams   | WR  | LV   | 0           | 0          | 0             | 0           | 0          | 1553         | 123        | 11           | 0             | 0                   |
+| D. Johnson | WR  | Pit  | 0           | 0          | 0             | 53          | 0          | 1161         | 107        | 8            | 2             | 1                   |
+| D. Mooney  | WR  | Chi  | 0           | 0          | 0             | 32          | 1          | 1055         | 81         | 4            | 0             | 0                   |
+| B. Cooks   | WR  | Hou  | 0           | 0          | 0             | 21          | 0          | 1037         | 90         | 6            | 0             | 0                   |
+| J. Meyers  | WR  | NE   | 45          | 0          | 0             | 9           | 0          | 866          | 83         | 2            | 1             | 2                   |
+| M. Gallup  | WR  | Dal  | 0           | 0          | 0             | 0           | 0          | 445          | 35         | 2            | 0             | 0                   |
+| P. Campbell| WR  | Ind  | 0           | 0          | 0             | 0           | 0          | 162          | 10         | 1            | 0             | 0                   |
+
+
+Now that all the players are stratified, irrelevant columns can be dropped.
+
+### Quarterbacks
+
+```python
+# Drop the specified columns
+columns_to_drop = ['Receving Yds', 'Receptions', 'Receving TDs']
+qb_df_dropped = qb_df.drop(columns=columns_to_drop)
+
+# Convert the DataFrame back to a table
+qb_md_dropped = qb_df_dropped.to_table(index=False)
+qb_md_dropped
+```
+
+Now Quarterback data appears as:
+
+| Player      | Pos | Team | Passing Yds | Passing TD | Interceptions | Rushing Yds | Rushing TD | Total Fumbles | 2PT Conversion Made |
+|-------------|-----|------|-------------|------------|---------------|-------------|------------|---------------|---------------------|
+| D. Prescott | QB  | Dal  | 4449        | 37         | 10            | 146         | 1          | 14            | 3                   |
+| K. Cousins  | QB  | Min  | 4221        | 33         | 7             | 115         | 1          | 12            | 0                   |
+
+
+### Running Backs
+
+```python
+# Drop the specified columns
+columns_to_drop = ['Passing Yds', 'Passing TD', 'Interceptions']
+rb_df_dropped = rb_df.drop(columns=columns_to_drop)
+
+# Convert the DataFrame back to a table
+rb_md_dropped = rb_df_dropped.to_table(index=False)
+rb_md_dropped
+```
+
+Now the Running Back data appears as:
+
+| Player       | Pos | Team | Rushing Yds | Rushing TD | Receving Yds | Receptions | Receving TDs | Total Fumbles | 2PT Conversion Made |
+|--------------|-----|------|-------------|------------|--------------|------------|--------------|---------------|---------------------|
+| D. Cook      | RB  | Min  | 1159        | 6          | 224          | 34         | 0            | 3             | 1                   |
+| T. Pollard   | RB  | Dal  | 719         | 2          | 337          | 39         | 0            | 2             | 0                   |
+| R. Stevenson | RB  | NE   | 606         | 5          | 123          | 14         | 0            | 2             | 0                   |
+
+
+### Tight-Ends
+
+```python
+# Drop the specified columns
+columns_to_drop = ['Passing Yds', 'Passing TD', 'Interceptions']
+te_df_dropped = te_df.drop(columns=columns_to_drop)
+
+# Convert the DataFrame back to a table
+te_md_dropped = te_df_dropped.to_table(index=False)
+te_md_dropped
+```
+
+Now the Tight-End data appears as:
+
+| Player  | Pos | Team | Rushing Yds | Rushing TD | Receving Yds | Receptions | Receving TDs | Total Fumbles | 2PT Conversion Made |
+|---------|-----|------|-------------|------------|--------------|------------|--------------|---------------|---------------------|
+| K. Pitts| TE  | Atl  | 0           | 0          | 1026         | 68         | 1            | 0             | 0                   |
+
+
+### Wide Receviers
+
+```python
+# Drop the specified columns
+columns_to_drop = ['Passing Yds', 'Passing TD', 'Interceptions']
+wr_df_dropped = wr_df.drop(columns=columns_to_drop)
+
+# Convert the DataFrame back to a table
+wr_md_dropped = wr_df_dropped.to_table(index=False)
+wr_md_dropped
+```
+
+Now the Wide Recevier data appears as:
+
+| Player      | Pos | Team | Rushing Yds | Rushing TD | Receving Yds | Receptions | Receving TDs | Total Fumbles | 2PT Conversion Made |
+|-------------|-----|------|-------------|------------|--------------|------------|--------------|---------------|---------------------|
+| D. Adams    | WR  | LV   | 0           | 0          | 1553         | 123        | 11           | 0             | 0                   |
+| D. Johnson  | WR  | Pit  | 53          | 0          | 1161         | 107        | 8            | 2             | 1                   |
+| D. Mooney   | WR  | Chi  | 32          | 1          | 1055         | 81         | 4            | 0             | 0                   |
+| B. Cooks    | WR  | Hou  | 21          | 0          | 1037         | 90         | 6            | 0             | 0                   |
+| J. Meyers   | WR  | NE   | 9           | 0          | 866          | 83         | 2            | 1             | 2                   |
+| M. Gallup   | WR  | Dal  | 0           | 0          | 445          | 35         | 2            | 0             | 0                   |
+| P. Campbell | WR  | Ind  | 0           | 0          | 162          | 10         | 1            | 0             | 0                   |
+
+With the data now sratfied I can proceed to data analysis and optimization.
+# Calculating Per-Game Stats
+
 I then converted season-long statistics into per-game statistics to have a standardized measure for each player.
 
 ```python
