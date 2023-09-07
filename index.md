@@ -279,57 +279,170 @@ With the data now sratfied I can proceed to data analysis and optimization.
 I then converted season-long statistics into per-game statistics to have a standardized measure for each player.
 
 ```python
-# Calculate per-game statistics
-df['PassingYards_PerGame'] = df['PassingYards'] / 18
-df['RushingYards_PerGame'] = df['RushingYards'] / 18
+
+# Define a function to calculate the average stats per game
+def calculate_avg_stats_per_game(df, position):
+    numerical_cols = df.select_dtypes(include=['number']).columns
+    df_avg = df.copy()
+    df_avg[numerical_cols] = df[numerical_cols] / 18  # Divide by total number of games
+    return df_avg.to_table(index=False)
+
+# Read all the tables into separate DataFrames
+tables_dict = {
+    'QB': qb_df,
+    'RB': rb_df,
+    'TE': te_df,
+    'WR': wr_df
+}
+
+# Calculate the average stats per game for each position and store the tables
+for position, df in tables_dict.items():
+    tables_avg_per_game[position] = calculate_avg_stats_per_game(df, position)
 ```
-This code snippet calculates per-game stats by dividing the total stats by the number of games in the 2022 season (18 games). This allows the analysis to make fair comparisons between players.
+
+This code snippet calculates per-game stats by dividing the total stats by the number of games in the 2022 season (18 games). This allows the analysis to make fair comparisons between players. The following tables display these new values.
+
+### QB
+
+| Player      | Pos   | Team   |   Passing Yds |   Passing TD |   Interceptions |   Rushing Yds |   Rushing TD |   Total Fumbles |   2PT Conversion Made |
+|:------------|:------|:-------|--------------:|-------------:|----------------:|--------------:|-------------:|----------------:|----------------------:|
+| D. Prescott | QB    | Dal    |       247.167 |      2.05556 |        0.555556 |       8.11111 |    0.0555556 |        0.777778 |              0.166667 |
+| K. Cousins  | QB    | Min    |       234.5   |      1.83333 |        0.388889 |       6.38889 |    0.0555556 |        0.666667 |              0        |
+
+### RB
+
+| Player       | Pos   | Team   |   Rushing Yds |   Rushing TD |   Receving Yds |   Receptions |   Receving TDs |   Total Fumbles |   2PT Conversion Made |
+|:-------------|:------|:-------|--------------:|-------------:|---------------:|-------------:|---------------:|----------------:|----------------------:|
+| D. Cook      | RB    | Min    |       64.3889 |     0.333333 |       12.4444  |     1.88889  |              0 |        0.166667 |             0.0555556 |
+| T. Pollard   | RB    | Dal    |       39.9444 |     0.111111 |       18.7222  |     2.16667  |              0 |        0.111111 |             0         |
+| R. Stevenson | RB    | NE     |       33.6667 |     0.277778 |        6.83333 |     0.777778 |              0 |        0.111111 |             0         |
+
+### TE
+
+| Player   | Pos   | Team   |   Rushing Yds |   Rushing TD |   Receving Yds |   Receptions |   Receving TDs |   Total Fumbles |   2PT Conversion Made |
+|:---------|:------|:-------|--------------:|-------------:|---------------:|-------------:|---------------:|----------------:|----------------------:|
+| K. Pitts | TE    | Atl    |             0 |            0 |             57 |      3.77778 |      0.0555556 |               0 |                     0 |
+
+### WR
+
+| Player      | Pos   | Team   |   Rushing Yds |   Rushing TD |   Receving Yds |   Receptions |   Receving TDs |   Total Fumbles |   2PT Conversion Made |
+|:------------|:------|:-------|--------------:|-------------:|---------------:|-------------:|---------------:|----------------:|----------------------:|
+| D. Adams    | WR    | LV     |       0       |    0         |        86.2778 |     6.83333  |      0.611111  |       0         |             0         |
+| D. Johnson  | WR    | Pit    |       2.94444 |    0         |        64.5    |     5.94444  |      0.444444  |       0.111111  |             0.0555556 |
+| D. Mooney   | WR    | Chi    |       1.77778 |    0.0555556 |        58.6111 |     4.5      |      0.222222  |       0         |             0         |
+| B. Cooks    | WR    | Hou    |       1.16667 |    0         |        57.6111 |     5        |      0.333333  |       0         |             0         |
+| J. Meyers   | WR    | NE     |       0.5     |    0         |        48.1111 |     4.61111  |      0.111111  |       0.0555556 |             0.111111  |
+| M. Gallup   | WR    | Dal    |       0       |    0         |        24.7222 |     1.94444  |      0.111111  |       0         |             0         |
+| P. Campbell | WR    | Ind    |       0       |    0         |         9      |     0.555556 |      0.0555556 |       0         |             0         |
+
 
 ## Data Analysis 
 ### Scoring Projections
-The main goal is to project the number of points each player will score in future games based on past performance.
+The main goal is to project the number of points each player will score in future games based on past performance. Code that details a total points per game analysis is shown below:
 
 ```python
-# Calculate fantasy points for passing yards
-df['FantasyPoints_Passing'] = df['PassingYards_PerGame'] * 0.04
-df['FantasyPoints_Rushing'] = df['RushingYards_PerGame'] * 0.01
+# Define a function to calculate the total average score per game for each player based on the scoring system
+def calculate_avg_score_per_game(df, position):
+    df_avg_score = df.copy()
+    df_avg_score['Avg Score Per Game'] = 0
+
+    # Scoring system
+    scoring_system = {
+        'Passing Yds': 0.04,
+        'Passing TD': 4,
+        'Interceptions': -2,
+        '2PT Conversion Made': 2,  # Assuming this column includes both passing and receiving two-point conversions
+        'Rushing Yds': 0.1,
+        'Rushing TD': 6,
+        'Receving Yds': 0.1,
+        'Receptions': 1,
+        'Receving TDs': 6
+    }
+
+    # Calculate the average score per game
+    for col, points in scoring_system.items():
+        if col in df.columns:
+            df_avg_score['Avg Score Per Game'] += df[col] * points / 18  # Divide by total number of games
+
+    return df_avg_score
+
+# Initialize a dictionary to hold the tables for each position with average score
+tables_avg_score = {}
+
+# Calculate the average score per game for each position and store the tables
+for position, df in tables_dict.items():
+    df_avg_score = calculate_avg_score_per_game(df, position)
+    tables_avg_score[position] = df_avg_score(index=False, columns=df.columns.tolist() + ['Avg Score Per Game'])
 ```
-In this snippet, I calculate the fantasy points for passing yards based on the league's scoring settings, which award 0.04 points for each passing yard. Similar calculations were done for other scoring categories.
+
+The resulting data is shown here:
+
+### QB
+
+| Player      | Pos   | Team   |   Avg Score Per Game |
+|:------------|:------|:-------|---------------------:|
+| D. Prescott | QB    | Dal    |              18.4756 |
+| K. Cousins  | QB    | Min    |              16.9078 |
+
+### RB
+
+| Player       | Pos   | Team   |   Avg Score Per Game |
+|:-------------|:------|:-------|---------------------:|
+| D. Cook      | RB    | Min    |             11.6833  |
+| T. Pollard   | RB    | Dal    |              8.7     |
+| R. Stevenson | RB    | NE     |              6.49444 |
+
+### TE
+
+| Player   | Pos   | Team   |   Avg Score Per Game |
+|:---------|:------|:-------|---------------------:|
+| K. Pitts | TE    | Atl    |              9.81111 |
+
+### WR
+
+| Player      | Pos   | Team   |   Avg Score Per Game |
+|:------------|:------|:-------|---------------------:|
+| D. Adams    | WR    | LV     |             19.1278  |
+| D. Johnson  | WR    | Pit    |             15.4667  |
+| D. Mooney   | WR    | Chi    |             12.2056  |
+| B. Cooks    | WR    | Hou    |             12.8778  |
+| J. Meyers   | WR    | NE     |             10.4611  |
+| M. Gallup   | WR    | Dal    |              5.08333 |
+| P. Campbell | WR    | Ind    |              1.78889 |
+
+Now that there is a general idea of which players consistently preform better, my week one lineup can be optimized. This code analyzes the players and their average scores to return a lineup which is expected to include the greatest number of average points generated.
+
+```python
+# Define a function to recommend the optimal players to start this week based on average score per game
+def recommend_starting_lineup(df_avg_score, position, num_starters):
+    # Sort the DataFrame by 'Avg Score Per Game' in descending order
+    df_sorted = df_avg_score.sort_values(by='Avg Score Per Game', ascending=False).reset_index(drop=True)
+    
+    # Select the top 'num_starters' players based on 'Avg Score Per Game'
+    recommended_starters = df_sorted.head(num_starters)
+    
+    return recommended_starters
+
+# Define the number of starters for each position in a typical fantasy football lineup
+num_starters_dict = {
+    'QB': 1,
+    'RB': 2,
+    'WR': 2,
+    'TE': 1
+}
+
+# Initialize a dictionary to hold the recommended starters for each position
+recommended_starters_dict = {}
+
+# Recommend the optimal players to start this week for each position
+for position, df in tables_dict.items():
+    df_avg_score = calculate_avg_score_per_game(df, position)
+    recommended_starters = recommend_starting_lineup(df_avg_score, position, num_starters_dict[position])
+    recommended_starters_dict[position] = recommended_starters
+```
 
 ## Results
 Based on my calculations, I can estimate the number of fantasy points each player is expected to score in future games. A predictive model for player performance was generated to optimize the team lineup each week, taking into account the various influencing factors.
-
-Here is a sample of the code relevant to analyzing the data set, searching for players on my roster, then creating a projection of points based on last seasons per game totals. Once the results of this analysis were calculated, the code finds the maximum amount of per week points and returns that player as a suggestion for who to start going into week one.
-
-```python
-# Filter the DataFrame to find rows where the 'Player' column is either 'Dak Prescott' or 'Kirk Cousins'
-players_data = df_sheet1[df_sheet1['Player'].isin(['D. Prescott', 'K. Cousins'])]
-players_data
-
-# Set the proper column names based on the first row and remove it
-df_sheet1.columns = df_sheet1.iloc[0]
-df_sheet1 = df_sheet1[1:].reset_index(drop=True)
-
-# Filter the DataFrame for rows where the 'Pos' (Position) column is 'QB' (Quarterback) and contains players on my roster.
-df_qbs = df_sheet1[df_sheet1['Pos'] == 'QB'] && == players_data
-
-# Convert the 'Passing Yds' column to numeric, as it might be stored as strings
-df_qbs['Passing Yds'] = pd.to_numeric(df_qbs['Passing Yds'], errors='coerce')
-
-# Find the quarterback with the most passing yards
-top_passing_qb = df_qbs.loc[df_qbs['Passing Yds'].idxmax()]['Player']
-top_passing_qb
-```
-
-The summamry of this analysis specifically for QBs on my roster is detailed in the table below:
-
-| Player | Pos | Team | Passing Yds | Passing TD | Interceptions | Rushing Yds | Rushing TD | Receving Yds | Receptions | Receving TDs | Total Fumbles | 2PT Conversion Made |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| D. Prescott | QB | Dal | 4449 | 37 | 10 | 146 | 1 | 0 | 0 | 0 | 14 | 3 |
-| K. Cousins | QB | Min | 4221 | 33 | 7 | 115 | 1 | 0 | 0 | 0 | 12 | 0 |
-
-
-After calculations, Dak Prescott was determined to be the optimal choice for week one. The summary of findings for the rest of the players on my roster stratified by position are shown below including an analysis of the top five players currently in free agency for each position.
 
 ### Key Findings
 
