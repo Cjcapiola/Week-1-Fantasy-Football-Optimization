@@ -157,7 +157,7 @@ The summamry of this analysis specifically for QBs on my roster is detailed in t
 | K. Cousins | QB | Min | 4221 | 33 | 7 | 115 | 1 | 0 | 0 | 0 | 12 | 0 |
 
 
-After calculations, Dak Prescott was determined to be the optimal choice for week one.
+After calculations, Dak Prescott was determined to be the optimal choice for week one. The summary of findings for the rest of the players on my roster stratified by position are shown below including an analysis of the top five players currently in free agency for each position.
 
 ### Key Findings
 
