@@ -93,10 +93,15 @@ Before diving into the analysis, the dataset was thoroughly cleaned and pruned t
 # Load the dataset
 df = pd.read_excel('Cjcapiola/Week-1-Fantasy-Football-Optimization/raw/main/New%20Fantasy%202022%20Season%20Totals.xlsx')
 
+#Based on player position
+if (position == "QB")
+ drop == [3:7];
+end
+
 # Drop irrelevant columns
-df.drop(['Passing Incompletions', 'Pick Six', 'Rush Attempts', 1st Downs Made', 'Receving Targets', 'Kickoff Return TD' 'Kickoff Return Total Yards'], axis=1, inplace=True)
+df.drop(['Passing Incompletions', 'Pick Six', 'Rush Attempts', '1st Downs Made', 'Receving Targets', 'Kickoff Return TD' 'Kickoff Return Total Yards'], axis=1, inplace=True)
 ```
-This code snippet loads the dataset into a Pandas DataFrame and removes irrelevant columns. The drop() method is used to get rid of columns that I do not need for this specific analysis.
+This code snippet loads the dataset into a Pandas DataFrame and removes irrelevant columns. The drop() method is used to get rid of columns that I do not need for this specific analysis. For example, the fantasy football points for a quarterback do not depend on the number of first down conversions they made nor how many receving targets they had for the 2022 season. By dropping unessessary data, I was able to streamline the analysis process by avoiding uneccessary computational work.
 
 ### Calculating Per-Game Stats
 I then converted season-long statistics into per-game statistics to have a standardized measure for each player.
@@ -115,11 +120,44 @@ The main goal is to project the number of points each player will score in futur
 ```python
 # Calculate fantasy points for passing yards
 df['FantasyPoints_Passing'] = df['PassingYards_PerGame'] * 0.04
+df['FantasyPoints_Rushing'] = df['RushingYards_PerGame'] * 0.01
 ```
 In this snippet, I calculate the fantasy points for passing yards based on the league's scoring settings, which award 0.04 points for each passing yard. Similar calculations were done for other scoring categories.
 
 ## Results
 Based on my calculations, I can estimate the number of fantasy points each player is expected to score in future games. A predictive model for player performance was generated to optimize the team lineup each week, taking into account the various influencing factors.
+
+Here is a sample of the code relevant to analyzing the data set, searching for players on my roster, then creating a projection of points based on last seasons per game totals. Once the results of this analysis were calculated, the code finds the maximum amount of per week points and returns that player as a suggestion for who to start going into week one.
+
+```python
+# Filter the DataFrame to find rows where the 'Player' column is either 'Dak Prescott' or 'Kirk Cousins'
+players_data = df_sheet1[df_sheet1['Player'].isin(['D. Prescott', 'K. Cousins'])]
+players_data
+
+# Set the proper column names based on the first row and remove it
+df_sheet1.columns = df_sheet1.iloc[0]
+df_sheet1 = df_sheet1[1:].reset_index(drop=True)
+
+# Filter the DataFrame for rows where the 'Pos' (Position) column is 'QB' (Quarterback) and contains players on my roster.
+df_qbs = df_sheet1[df_sheet1['Pos'] == 'QB'] && == players_data
+
+# Convert the 'Passing Yds' column to numeric, as it might be stored as strings
+df_qbs['Passing Yds'] = pd.to_numeric(df_qbs['Passing Yds'], errors='coerce')
+
+# Find the quarterback with the most passing yards
+top_passing_qb = df_qbs.loc[df_qbs['Passing Yds'].idxmax()]['Player']
+top_passing_qb
+```
+
+The summamry of this analysis specifically for QBs on my roster is detailed in the table below:
+
+| Player | Pos | Team | Passing Yds | Passing TD | Interceptions | Rushing Yds | Rushing TD | Receving Yds | Receptions | Receving TDs | Total Fumbles | 2PT Conversion Made |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| D. Prescott | QB | Dal | 4449 | 37 | 10 | 146 | 1 | 0 | 0 | 0 | 14 | 3 |
+| K. Cousins | QB | Min | 4221 | 33 | 7 | 115 | 1 | 0 | 0 | 0 | 12 | 0 |
+
+
+After calculations, Dak Prescott was determined to be the optimal choice for week one.
 
 ### Key Findings
 
